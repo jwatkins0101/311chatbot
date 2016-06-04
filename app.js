@@ -47,6 +47,7 @@ function sendTextMessage(sender, text) {
 
 app.use(function(req, res, next){
   req.sendTextMessage = sendTextMessage;
+  req.bot = require("./bot");
   next();
 });
 
