@@ -10,4 +10,7 @@ router.get('/chat', function(req, res) {
   console.log(req);
 });
 
+router.get('/webhook', require("./webhook").get)
+router.post('/webhook', require("./webhook").post)
+
 module.exports = router;
