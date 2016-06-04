@@ -6,7 +6,8 @@ router.get('/', function(req, res) {
 });
 
 router.get('/chat', function(req, res) {
-  res.send('Hello');
+  res.send('You said ' + req);
+  console.log(req);
 });
 
 module.exports = router;

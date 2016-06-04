@@ -8,7 +8,7 @@ angular.module('311WebApp')
   $scope.attachMsg = function(query) {
     $scope.messages.push(query);
     msgService.getResponse(query, function(resp) {
-       $scope.messages.push(resp);
+       $scope.messages.push(resp.data);
     });
   };
 });
