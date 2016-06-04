@@ -3,3 +3,4 @@ node_modules
 *.log
 aws.json
 *.tgz
+public/vendor
