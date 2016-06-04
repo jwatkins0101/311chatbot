@@ -18,6 +18,7 @@ route.post = function (req, res) {
     if (event.message && event.message.text) {
       text = event.message.text;
       // Handle a text message from this sender
+      req.sendTextMessage(sender, text);
     }
   }
   res.sendStatus(200);
