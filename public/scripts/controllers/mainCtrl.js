@@ -6,9 +6,9 @@ angular.module('311WebApp')
   $scope.messages = ["dummy message"];
 
   $scope.attachMsg = function(query) {
-    $scope.messages.push(query);
+    $scope.messages.push('Me: ' + query);
     msgService.getResponse(query, function(resp) {
-       $scope.messages.push(resp.data);
+       $scope.messages.push('311Bot: ' + resp.data);
     });
   };
 });

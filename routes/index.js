@@ -6,8 +6,10 @@ router.get('/', function(req, res) {
 });
 
 router.get('/chat', function(req, res) {
-  res.send('You said ' + req);
-  console.log(req);
+  res.send('You said ' + req.body);
 });
+
+router.get('/webhook', require("./webhook").get)
+router.post('/webhook', require("./webhook").post)
 
 module.exports = router;
