@@ -80,7 +80,8 @@ body {
 
 /* Message styling */
 
-.text-style {
+.messages {
 	background-color: white;
-	text-align: right;
+	color: white;
+		
 }
