@@ -1,0 +1,12 @@
+<div class="card" ng-repeat="card in message.cards track by $index">
+  <div class="card-image">
+    <img src="{{ card.image_url }}">
+  </div>
+  <div class="card-title">
+    <span class="main-title">{{ card.title }}</span>
+    <span class="subtitle">{{ card.subtitle }}</span>
+  </div>
+  <div class="button" ng-repeat="button in card.buttons">
+    <span class="button-title"><a href="{{button.url}}">{{button.title}}</span>
+  </div>
+</div>
