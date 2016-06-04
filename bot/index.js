@@ -138,6 +138,7 @@ function logProblem(address, problem){
 }
 
 module.exports = function(sender, event){
+  console.log("context", context[sender]);
 
   switch(context[sender]){
     // 0. Ask for the address...
