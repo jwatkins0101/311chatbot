@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('311WebApp')
-.controller('mainCtrl', function(msgService) {
+.controller('mainCtrl', function($scope, msgService) {
 
-   $scope.attachMsg = funcion() {
+   $scope.attachMsg = function() {
      msgService.getResponse(query);
    };
 });

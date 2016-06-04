@@ -31,9 +31,9 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body ng-app="311WebApp">
 
-    <div class="container">
+    <div class="container" ng-controller="mainCtrl">
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
@@ -47,7 +47,7 @@
       <div class="jumbotron">
         <h1>The Mayor Listens</h1>
         <p class="lead">Chat with us about infrastructure issues you see around Louisville.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Click here to get started!</a></p>
+        <p><a class="btn btn-lg btn-success" ng-click="chatActive = true" href="#" role="button">Click here to get started!</a></p>
       </div>
 
     <!--  <div class="row marketing">
@@ -84,5 +84,9 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="scripts/vendor/angular.js" type="text/javascript"></script>
+    <script src="scripts/app.js" type="text/javascript"></script>
+    <script src="scripts/controllers/mainCtrl.js" type="text/javascript"></script>
+    <script src="scripts/services/msgService.js" type="text/javascript"></script>
   </body>
 </html>
