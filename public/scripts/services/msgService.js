@@ -1,6 +1,4 @@
 'use strict';
 
-angular.module('311WebApp', function() {
-
-  
-});
+angular.module('311WebApp')
+.service('msgService', function() {});
