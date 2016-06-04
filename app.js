@@ -34,7 +34,7 @@ function sendTextMessage(sender, text) {
       recipient: {
         id:sender
       },
-      message: messageData,
+      message: messageData
     }
   }, function(error, response, body) {
     if (error) {
