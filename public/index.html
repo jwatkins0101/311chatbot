@@ -52,7 +52,13 @@
 
 
       <div class="jumbotron" ng-show="chatActive">
-        chat window
+        <div class="chat-window">
+          <ul class="messages">
+            <li class="message" ng-repeat="message in messages">{{ message }}</li> 
+          </ul>
+        <input type="text" ng-model="query"></input>
+        <button ng-click="attachMsg(query)">Query</button>
+        </div>
       </div>
 
     <!--  <div class="row marketing">
