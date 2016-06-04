@@ -59,13 +59,14 @@ var problems = [{
 }, {
   id: 2,
   description: "Trash on private property"
-}, {
-  id: 3,
-  description: "High weeds/Grass/trees"
-}, {
-  id: 4,
-  description: "Abandoned Vehicle"
 }];
+// , {
+//   id: 3,
+//   description: "High weeds/Grass/trees"
+// }, {
+//   id: 4,
+//   description: "Abandoned Vehicle"
+// }];
 
 function buildWhatAboutMessage(address, problem){
   var buttons = problems.map(function(item){
@@ -137,6 +138,7 @@ function logProblem(address, problem){
 }
 
 module.exports = function(sender, event){
+  console.log("context", context[sender]);
 
   switch(context[sender]){
     // 0. Ask for the address...
