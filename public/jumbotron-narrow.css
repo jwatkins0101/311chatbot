@@ -77,3 +77,10 @@ body {
     border-bottom: 0;
   }
 }
+
+/* Message styling */
+
+.text-style {
+	background-color: white;
+	text-align: right;
+}
