@@ -52,16 +52,14 @@
 
 
       <div class="jumbotron" ng-show="chatActive">
-				<div class="chat-window form-group">
-					<ul class="chat-list" style="list-style:none">
-						<li class="messgae"></li>
-						<li class="message"></li>
-						<li class="message"></li>
-						<input class="chat-input form-control">
-						<br>
-						<li><button type="button" class="btn btn-default btn-sm" value="submit">Submit</button></li>
-					</ul>
-				</div>
+
+        <div class="chat-window">
+          <ul class="messages">
+            <li class="message" ng-repeat="message in messages">{{ message }}</li> 
+          </ul>
+        <input type="text" ng-model="query"></input>
+        <button ng-click="attachMsg(query)">Query</button>
+        </div>
       </div>
 
     <!--  <div class="row marketing">
