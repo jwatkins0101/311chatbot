@@ -55,7 +55,7 @@
 
         <div class="chat-window">
           <ul class="messages" style="list-style:none">
-            <li class="message text-style" ng-repeat="message in messages track by $index">{{ message }}</li> 
+            <li class="message text-style bg-primary" ng-repeat="message in messages track by $index">{{ message }}</li> 
           </ul>
 					<input type="text" ng-model="query"></input>
 					<button ng-click="attachMsg(query)">Send</button>
