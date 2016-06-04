@@ -41,7 +41,7 @@
             <li role="presentation"><a href="https://www.facebook.com/MayorGregFischer/" target="_blank">Facebook</a></li>
           </ul>
         </nav>
-        <h3 class="text-muted">Chat Bot 311</h3>
+       <!-- <h3 class="text-muted">Chat Bot 311</h3>-->
       </div>
 
       <div class="jumbotron" ng-hide="chatActive">
@@ -52,7 +52,16 @@
 
 
       <div class="jumbotron" ng-show="chatActive">
-        chat window
+				<div class="chat-window form-group">
+					<ul class="chat-list" style="list-style:none">
+						<li class="messgae"></li>
+						<li class="message"></li>
+						<li class="message"></li>
+						<input class="chat-input form-control">
+						<br>
+						<li><button type="button" class="btn btn-default btn-sm" value="submit">Submit</button></li>
+					</ul>
+				</div>
       </div>
 
     <!--  <div class="row marketing">
@@ -81,7 +90,7 @@
 			-->
 
       <footer class="footer">
-        <p>A Partnership with Louisvile Metro Government and Civic Data Alliance</p>
+        <p>A Partnership with <a href="https://louisvilleky.gov/">Louisvile Metro Government</a> and <a href="http://www.civicdataalliance.org/">Civic Data Alliance</p>
       </footer>
 
     </div> <!-- /container -->
