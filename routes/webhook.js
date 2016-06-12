@@ -20,7 +20,6 @@ route.post = function (req, res) {
       if(typeof event.postback != "undefined" || typeof event.message != "undefined"){
         req.bot(sender, event);
       }
-
     }
   }catch(err){
     console.error(err);
