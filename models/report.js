@@ -1,4 +1,7 @@
-var Report = sequelize.define('report', {
+var CaseType  = require('./case_type'),
+    Sequelize = require('sequelize');
+
+var Report = Sequelize.define('report', {
     address: {
         type: Sequelize.STRING,
         field: 'address'
@@ -13,6 +16,8 @@ var Report = sequelize.define('report', {
     ],
     freezeTableName: true // Model tableName will be the same as the model name
 });
+
+Report.belongsToMany(CaseType, {through: 'ReportCaseType'});
 
 Report.sync({force: false}).then(function () {
     // Table created
