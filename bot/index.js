@@ -100,22 +100,25 @@ var problems = [{
 function buildWhatAboutMessage(address, problem){
 
   var elements = problems.map(function(item){
+    var payload = JSON.stringify({
+      kind: "whatAbout",
+      address: address,
+      problem: problem,
+      newProblem: item.id
+    });
     return {
       title: "Is this your problem?",
       image_url: "https://themayorlistens.com/images/" + item.img,
       // subtitle: "Please choose one...",
-      buttons: {
+      buttons: [{
         type: "postback",
         title: item.description,
-        payload: JSON.stringify({
-          kind: "whatAbout",
-          address: address,
-          problem: problem,
-          newProblem: item.id
-        })
-      }
+        payload: payload
+      }]
     };
   });
+
+  console.log(elements);
 
   return {
     attachment: {
