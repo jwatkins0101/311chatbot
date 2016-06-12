@@ -2,6 +2,9 @@ var request = require("request");
 var Report = require('../models/report');
 var CaseType = require('../models/case_type');
 var usps = require('usps-web-tools-node-sdk');
+// var Report = require('../models/report');
+// var CaseType = require('../models/case_type');
+
 var context = {};
 
 
@@ -75,7 +78,7 @@ function sendTextMessage(sender, text) {
   });
 }
 
-var problems = [{
+var problems0 = [{
   id: 0,
   description: "Structure not maintained",
 },{
@@ -85,16 +88,33 @@ var problems = [{
   id: 2,
   description: "Trash on private property"
 }];
-// , {
-//   id: 3,
-//   description: "High weeds/Grass/trees"
-// }, {
-//   id: 4,
-//   description: "Abandoned Vehicle"
-// }];
+
+var problems1 = [{
+  id: 3,
+  description: "High weeds/Grass/trees"
+}, {
+  id: 4,
+  description: "Abandoned Vehicle"
+}, {
+  id: 5,
+  description: "Other"
+}];
 
 function buildWhatAboutMessage(address, problem){
-  var buttons = problems.map(function(item){
+  var buttons0 = problems0.map(function(item){
+    return {
+      type: "postback",
+      title: item.description,
+      payload: JSON.stringify({
+        kind: "whatAbout",
+        address: address,
+        problem: problem,
+        newProblem: item.id
+      })
+    };
+  });
+
+  var buttons1 = problems1.map(function(item){
     return {
       type: "postback",
       title: item.description,
@@ -115,7 +135,11 @@ function buildWhatAboutMessage(address, problem){
         "elements": [{
           "title": "What problem are you having?",
           "subtitle": "Please choose one...",
-          "buttons": buttons,
+          "buttons": buttons0,
+        }, {
+          "title": "What problem are you having?",
+          "subtitle": "Please choose one...",
+          "buttons": buttons1,
         }]
       }
     }
@@ -193,7 +217,7 @@ module.exports = function(sender, event){
     // 3. Log the data
     case "another":
       var payload = JSON.parse(event.postback.payload);
-      
+
       if(payload.another){
         var msg = buildWhatAboutMessage(payload.address, payload.problem);
         sendGenericMessage(sender, msg);
