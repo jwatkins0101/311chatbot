@@ -2,9 +2,10 @@ var request = require("request");
 //var Report = require('../models/report');
 //var CaseType = require('../models/case_type');
 var USPS = require('usps-webtools');
+var Q = require("q");
 
 var context = {};
-
+var db = null;
 
 function uspsValidation(address) {
   var usps = new USPS({
@@ -28,7 +29,6 @@ function uspsValidation(address) {
     console.log(address2);
   });
 }
-
 function sendGenericMessage(sender, messageData) {
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -76,69 +76,66 @@ function sendTextMessage(sender, text) {
   });
 }
 
-var problems0 = [{
+var problems = [{
   id: 0,
   description: "Structure not maintained",
+  img: "structure_not_maintained_card_360.jpg",
 },{
   id: 1,
   description: "Graffiti",
+  img: "graffiti_card_480.jpg",
 }, {
   id: 2,
-  description: "Trash on private property"
-}];
-
-var problems1 = [{
+  description: "Trash on private property",
+  img: "trash_on_private_property_card_360.jpg",
+}, {
   id: 3,
-  description: "High weeds/Grass/trees"
+  description: "High weeds/Grass/trees",
+  img: "structure_not_maintained_card_360.jpg",
 }, {
   id: 4,
-  description: "Abandoned Vehicle"
-}, {
-  id: 5,
-  description: "Other"
+  description: "Abandoned Vehicle",
+  img: "abandoned_vehicle_card_720.jpg",
 }];
 
 function buildWhatAboutMessage(address, problem){
-  var buttons0 = problems0.map(function(item){
-    return {
-      type: "postback",
-      title: item.description,
-      payload: JSON.stringify({
-        kind: "whatAbout",
-        address: address,
-        problem: problem,
-        newProblem: item.id
-      })
-    };
-  });
 
-  var buttons1 = problems1.map(function(item){
-    return {
-      type: "postback",
-      title: item.description,
-      payload: JSON.stringify({
+  var elements = problems.reduce(function(elements, item){
+    var notChosen = problem.reduce(function(notChosen, prob){
+      return item.id == prob ? false : notChosen;
+    }, true);
+
+    if(notChosen){
+      var payload = JSON.stringify({
         kind: "whatAbout",
         address: address,
         problem: problem,
         newProblem: item.id
-      })
-    };
-  });
+      });
+
+      elements.push({
+        title: "Is this your problem?",
+        image_url: "https://themayorlistens.com/images/" + item.img,
+        // subtitle: "Please choose one...",
+        buttons: [{
+          type: "postback",
+          title: item.description,
+          payload: payload
+        }]
+      });
+    }
+
+    return elements;
+  }, []);
+
+  console.log(elements);
 
   return {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "What problem are you having?",
-          "subtitle": "Please choose one...",
-          "buttons": buttons0,
-        }, {
-          "title": "What problem are you having?",
-          "subtitle": "Please choose one...",
-          "buttons": buttons1,
-        }]
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: elements
       }
     }
   };
@@ -179,12 +176,32 @@ function buildAddAnotherMessage(address, problem){
   };
 }
 
-function logProblem(address, problems){
-  console.log("address:", address);
-  console.log("problems:", problems);
+function logProblem(address, cases){
+  // address = {address, zipcode}
+  var report;
+  return Q.fcall(function(){
+    return model.Report.findOrCreate(address);
+  })
+    .then(function(item){
+      report = item;
+
+      var promises = cases.map(function(caesId){
+        var name = problems.reduce(function(name, problem){
+          return problem.id == caseId ? problem.description : name;
+        }, "unknown");
+        return model.CaseType.findOrCreate({name: name})
+          .then(function(item){
+            report.addCaseType(item);
+          });
+      });
+    })
+    .finally(function(){
+      console.log("address:", address);
+      console.log("problems:", problems);
+    });
 }
 
-module.exports = function(sender, event){
+function handle(sender, event){
   console.log("context", context[sender]);
   console.log("event", event);
 
@@ -196,12 +213,10 @@ module.exports = function(sender, event){
       break;
     // 1. Ask for the problems or ask for the address again...
     case "start":
-      if (event.message && event.message.text) {
-        var address = event.message.text;
-        var msg = buildWhatAboutMessage(address, []);
-        sendGenericMessage(sender, msg);
-        context[sender] = "addProblem";
-      }
+      var address = {address: event.message.text, zipcode: null};
+      var msg = buildWhatAboutMessage(address, []);
+      sendGenericMessage(sender, msg);
+      context[sender] = "addProblem";
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
@@ -227,4 +242,9 @@ module.exports = function(sender, event){
       }
       break;
   }
+};
+
+module.exports = function(db){
+  model = db;
+  return handle;
 };

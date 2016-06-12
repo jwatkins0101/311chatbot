@@ -22,34 +22,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-function sendTextMessage(sender, text) {
-    var messageData = {
-        text: text
-    };
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {
-            access_token: process.env.FB_ACCESS_TOKEN
-        },
-        method: 'POST',
-        json: {
-            recipient: {
-                id: sender
-            },
-            message: messageData
-        }
-    }, function (error, response, body) {
-        if (error) {
-            console.log('Error sending message: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-        }
-    });
-}
-
 app.use(function (req, res, next) {
-    req.sendTextMessage = sendTextMessage;
-    req.bot = require("./bot");
+    req.bot = require("./bot")({});
     next();
 });
 
@@ -83,24 +57,24 @@ app.use(function (err, req, res, next) {
 });
 
 // Setup the database
-var sequelize = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
-    host: 'localhost',
-    dialect: 'mysql',
-
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-});
-
-sequelize
-    .authenticate()
-    .then(function(err) {
-        console.log('Connection has been established successfully.');
-    })
-    .catch(function (err) {
-        console.log('Unable to connect to the database:', err);
-    });
+// var sequelize = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+//
+//     pool: {
+//         max: 5,
+//         min: 0,
+//         idle: 10000
+//     },
+// });
+//
+// sequelize
+//     .authenticate()
+//     .then(function(err) {
+//         console.log('Connection has been established successfully.');
+//     })
+//     .catch(function (err) {
+//         console.log('Unable to connect to the database:', err);
+//     });
 
 module.exports = app;
