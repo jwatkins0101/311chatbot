@@ -2,6 +2,7 @@ var request = require("request");
 var Report = require('../models/report');
 var CaseType = require('../models/case_type');
 var usps = require('usps-web-tools-node-sdk');
+var Q = require("q");
 
 var context = {};
 var db = null;
@@ -164,9 +165,27 @@ function buildAddAnotherMessage(address, problem){
   };
 }
 
-function logProblem(address, problems){
-  console.log("address:", address);
-  console.log("problems:", problems);
+function logProblem(address, cases){
+  // address = {address, zipcode}
+  var report;
+  return model.Report.findOrCreate(address)
+    .then(function(item){
+      report = item;
+
+      var promises = cases.map(function(caesId){
+        var name = problems.reduce(function(name, problem){
+          return problem.id == caseId ? problem.description : name;
+        }, "unknown");
+        return model.CaseType.findOrCreate({name: name})
+          .then(function(item){
+            report.addCaseType(item);
+          });
+      });
+    })
+    .then(function(){
+      console.log("address:", address);
+      console.log("problems:", problems);
+    });
 }
 
 function handle(sender, event){
@@ -182,7 +201,7 @@ function handle(sender, event){
     // 1. Ask for the problems or ask for the address again...
     case "start":
       if (event.message && event.message.text) {
-        var address = event.message.text;
+        var address = {address: event.message.text, zipcode: null};
         var msg = buildWhatAboutMessage(address, []);
         sendGenericMessage(sender, msg);
         context[sender] = "addProblem";
