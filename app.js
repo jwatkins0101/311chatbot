@@ -4,6 +4,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+require('dotenv').load();
 
 var routes = require('./routes');
 
@@ -47,6 +48,7 @@ function sendTextMessage(sender, text) {
 
 app.use(function(req, res, next){
   req.sendTextMessage = sendTextMessage;
+  req.bot = require("./bot");
   next();
 });
 
