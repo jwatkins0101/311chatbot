@@ -7,7 +7,7 @@ var Q = require("q");
 var context = {};
 var db = null;
 
-function uspsValidation(address) {
+function uspsValidation(address, callback) {
   var usps = new USPS({
     server: 'http://production.shippingapis.com/ShippingAPI.dll',
     userId: '284TECHU4774',
@@ -21,14 +21,9 @@ function uspsValidation(address) {
     city: 'Louisville',
     state: 'KY',
     zip: '99999'
-  }, function(err, address2) {
-    if(err){
-      console.log(err);
-      return;
-    }
-    console.log(address2);
-  });
+  }, callback);
 }
+
 function sendGenericMessage(sender, messageData) {
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -213,7 +208,7 @@ function handle(sender, event){
       break;
     // 1. Ask for the problems or ask for the address again...
     case "start":
-      uspsValidaation(event.message.text, function(err, item){
+      uspsValidation(event.message.text, function(err, item){
         if(err){
           sendTextMessage(sender, "We couldn't find that address. Please enter the address again...");
           return null;
@@ -223,7 +218,6 @@ function handle(sender, event){
         sendGenericMessage(sender, msg);
         context[sender] = "addProblem";
       });
-
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
