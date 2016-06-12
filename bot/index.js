@@ -101,8 +101,8 @@ function buildWhatAboutMessage(address, problem){
 
   var elements = problems.reduce(function(elements, item){
     var notChosen = problem.reduce(function(notChosen, prob){
-      return item.id == prob ? true : notChosen;
-    }, false);
+      return item.id == prob ? false : notChosen;
+    }, true);
 
     if(notChosen){
       var payload = JSON.stringify({
