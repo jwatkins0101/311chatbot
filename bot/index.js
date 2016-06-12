@@ -187,8 +187,8 @@ function logProblem(address, cases){
 }
 
 function handle(sender, event){
-  // console.log("context", context[sender]);
-  // console.log("event", event);
+  console.log("context", context[sender]);
+  console.log("event", event);
 
   switch(context[sender]){
     // 0. Ask for the address...
@@ -198,12 +198,10 @@ function handle(sender, event){
       break;
     // 1. Ask for the problems or ask for the address again...
     case "start":
-      if (event.message && event.message.text) {
-        var address = {address: event.message.text, zipcode: null};
-        var msg = buildWhatAboutMessage(address, []);
-        sendGenericMessage(sender, msg);
-        context[sender] = "addProblem";
-      }
+      var address = {address: event.message.text, zipcode: null};
+      var msg = buildWhatAboutMessage(address, []);
+      sendGenericMessage(sender, msg);
+      context[sender] = "addProblem";
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
