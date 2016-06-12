@@ -11,18 +11,15 @@ route.get = function (req, res, next) {
 
 
 route.post = function (req, res) {
-  messaging_events = req.body.entry[0].messaging;
-  try{
-    for (i = 0; i < messaging_events.length; i++) {
-      event = req.body.entry[0].messaging[i];
-      sender = event.sender.id;
-      req.bot(sender, event);
-    }
-  }catch(ex){
-    console.error(ex);
-  }
-
   res.json({msg: "okay"});
+
+  messaging_events = req.body.entry[0].messaging;
+
+  for (i = 0; i < messaging_events.length; i++) {
+    event = req.body.entry[0].messaging[i];
+    sender = event.sender.id;
+    req.bot(sender, event);
+  }
 };
 
 

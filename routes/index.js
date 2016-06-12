@@ -7,23 +7,19 @@ router.get('/', function(req, res) {
 
 router.get('/chat', function(req, res) {
   res.send({
-              isCard: true,
-              cards: [{
-                        image_url: 'http://lorempixel.com/400/200',
-                        title: 'A card!',
-                        subtitle: 'structured response',
-                        buttons: [
-                                  {
-                                    title: 'a button',
-                                    url: '#'
-                                  },
-                                  {
-                                    title: 'another button',
-                                    url: '#'
-                                  }
-                                 ]
-                        }
-                      ]
+    isCard: true,
+    cards: [{
+      image_url: 'http://lorempixel.com/400/200',
+      title: 'A card!',
+      subtitle: 'structured response',
+      buttons: [{
+        title: 'a button',
+        url: '#'
+      }, {
+        title: 'another button',
+        url: '#'
+      }]
+    }]
   });
 });
 
