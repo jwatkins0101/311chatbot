@@ -132,9 +132,9 @@ function buildAddAnotherMessage(address, problem){
   };
 }
 
-function logProblem(address, problem){
-  console.log("address:", payload.address);
-  console.log("problem:", payload.problem);
+function logProblem(address, problems){
+  console.log("address:", address);
+  console.log("problems:", problems);
 }
 
 module.exports = function(sender, event){
