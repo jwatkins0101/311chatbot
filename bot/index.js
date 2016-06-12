@@ -1,4 +1,7 @@
 var request = require("request");
+var Report = require('../models/report');
+var CaseType = require('../models/case_type');
+var usps = require('usps-web-tools-node-sdk');
 // var Report = require('../models/report');
 // var CaseType = require('../models/case_type');
 
@@ -26,6 +29,29 @@ function sendGenericMessage(sender, messageData) {
     }
   });
 }
+
+function uspsValidaation(address) {
+  // tell it to use your username from the e-mail
+  usps.configure({
+    userID: '284TECHU4774',
+    password:'504AD64RK104'
+  });
+
+  usps.addressInformation.verify(
+      { address: address },
+
+      function (error, response) {
+        if (error) {
+          // if there's a problem, the error object won't be null
+          console.log(error);
+        } else {
+          // otherwise, you'll get a response object
+          console.log(JSON.stringify(response));
+        }
+      }
+  );
+}
+
 
 function sendTextMessage(sender, text) {
   var messageData = {
