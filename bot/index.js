@@ -99,24 +99,33 @@ var problems = [{
 
 function buildWhatAboutMessage(address, problem){
 
-  var elements = problems.map(function(item){
-    var payload = JSON.stringify({
-      kind: "whatAbout",
-      address: address,
-      problem: problem,
-      newProblem: item.id
-    });
-    return {
-      title: "Is this your problem?",
-      image_url: "https://themayorlistens.com/images/" + item.img,
-      // subtitle: "Please choose one...",
-      buttons: [{
-        type: "postback",
-        title: item.description,
-        payload: payload
-      }]
-    };
-  });
+  var elements = problems.reduce(function(elements, item){
+    var notChosen = problem.reduce(function(notChosen, prob){
+      return item.id == prob ? true : notChosen;
+    }, false);
+
+    if(notChosen){
+      var payload = JSON.stringify({
+        kind: "whatAbout",
+        address: address,
+        problem: problem,
+        newProblem: item.id
+      });
+
+      elements.push({
+        title: "Is this your problem?",
+        image_url: "https://themayorlistens.com/images/" + item.img,
+        // subtitle: "Please choose one...",
+        buttons: [{
+          type: "postback",
+          title: item.description,
+          payload: payload
+        }]
+      });
+    }
+
+    return elements;
+  }, []);
 
   console.log(elements);
 
@@ -169,7 +178,9 @@ function buildAddAnotherMessage(address, problem){
 function logProblem(address, cases){
   // address = {address, zipcode}
   var report;
-  return model.Report.findOrCreate(address)
+  return Q.fcall(function(){
+    return model.Report.findOrCreate(address);
+  })
     .then(function(item){
       report = item;
 
@@ -183,7 +194,7 @@ function logProblem(address, cases){
           });
       });
     })
-    .then(function(){
+    .finally(function(){
       console.log("address:", address);
       console.log("problems:", problems);
     });
