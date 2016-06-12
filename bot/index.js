@@ -1,5 +1,6 @@
 var request = require("request");
 <<<<<<< HEAD
+<<<<<<< HEAD
 var Report = require('../models/case_type');
 var CaseType = require('../models/case_type');
 var usps = require('usps-web-tools-node-sdk');
@@ -9,6 +10,10 @@ var usps = require('usps-web-tools-node-sdk');
 var USPS = require('usps-webtools');
 var Q = require("q");
 >>>>>>> 57b0cc09d08170ed518de003a939cfdeed2231bb
+=======
+var USPS = require('usps-webtools');
+var Q = require("q");
+>>>>>>> 4d6b862e5dbe70ded866ad84988cbec9c6a50d36
 
 var context = {};
 var db = null;
