@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var Sequelize = require('sequelize');
+var Report = require('./models/index').Report;
+var CaseType = require('./models/index').CaseType;
+var DB;
 require('dotenv').load();
 
 var routes = require('./routes');
@@ -47,6 +50,31 @@ function sendTextMessage(sender, text) {
     });
 }
 
+// Set up data model and db connection
+DB = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
+    host: 'localhost',
+    dialect: 'mysql',
+
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    }
+});
+
+DB
+    .authenticate()
+    .then(function (err) {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(function (err) {
+        console.log('Unable to connect to the database:', err);
+    });
+
+var dataModel = {};
+dataModel.report = new Report(DB);
+dataModel.caseType = new CaseType(DB);
+
 app.use(function (req, res, next) {
     req.sendTextMessage = sendTextMessage;
     req.bot = require("./bot");
@@ -81,26 +109,5 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
     res.status(err.status || 500).json({message: err.message});
 });
-
-// Setup the database
-var sequelize = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
-    host: 'localhost',
-    dialect: 'mysql',
-
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-});
-
-sequelize
-    .authenticate()
-    .then(function(err) {
-        console.log('Connection has been established successfully.');
-    })
-    .catch(function (err) {
-        console.log('Unable to connect to the database:', err);
-    });
 
 module.exports = app;
