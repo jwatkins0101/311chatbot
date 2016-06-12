@@ -160,7 +160,7 @@ module.exports = function(sender, event){
     case "addProblem":
       var payload;
       try{
-        payload = JSON.parse(event.postback);
+        payload = JSON.parse(event.postback.payload);
       }catch(ex){
         console.error(ex);
         console.log("event.postback", event.postback);
@@ -174,7 +174,7 @@ module.exports = function(sender, event){
       break;
     // 3. Log the data
     case "another":
-      var payload = JSON.parse(event.postback);
+      var payload = JSON.parse(event.postback.payload);
       if(payload.another){
         var msg = buildAddAnotherMessage(payload.address, payload.problem);
         sendGenericMessage(sender, msg);
