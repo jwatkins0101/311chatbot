@@ -134,9 +134,9 @@ function buildAddAnotherMessage(address, problem){
   };
 }
 
-function logProblem(address, problem){
-  console.log("address:", payload.address);
-  console.log("problem:", payload.problem);
+function logProblem(address, problems){
+  console.log("address:", address);
+  console.log("problems:", problems);
 }
 
 module.exports = function(sender, event){
@@ -160,26 +160,20 @@ module.exports = function(sender, event){
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
-      var payload;
-      try{
-        payload = JSON.parse(event.postback);
-      }catch(ex){
-        console.error(ex);
-        console.log("event.postback", event.postback);
-        payload = event.postback;
-      }
+      var payload = JSON.parse(event.postback.payload);
 
-      var problem = payload.problem.push(payload.newProblem);
+      var problem = payload.problem.concat([payload.newProblem]);
       var msg = buildAddAnotherMessage(payload.address, problem);
       sendGenericMessage(sender, msg);
       context[sender] = "another";
       break;
     // 3. Log the data
     case "another":
-      var payload = JSON.parse(event.postback);
+      var payload = JSON.parse(event.postback.payload);
       if(payload.another){
-        var msg = buildAddAnotherMessage(payload.address, payload.problem);
+        var msg = buildWhatAboutMessage(payload.address, payload.problem);
         sendGenericMessage(sender, msg);
+        context[sender] = "addProblem";
       }else{
         logProblem(payload.address, payload.problem);
         sendTextMessage(sender, "Thanks for your report!");
