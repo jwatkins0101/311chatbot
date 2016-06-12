@@ -57,24 +57,24 @@ app.use(function (err, req, res, next) {
 });
 
 // Setup the database
-var sequelize = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
-    host: 'localhost',
-    dialect: 'mysql',
-
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-});
-
-sequelize
-    .authenticate()
-    .then(function(err) {
-        console.log('Connection has been established successfully.');
-    })
-    .catch(function (err) {
-        console.log('Unable to connect to the database:', err);
-    });
+// var sequelize = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+//
+//     pool: {
+//         max: 5,
+//         min: 0,
+//         idle: 10000
+//     },
+// });
+//
+// sequelize
+//     .authenticate()
+//     .then(function(err) {
+//         console.log('Connection has been established successfully.');
+//     })
+//     .catch(function (err) {
+//         console.log('Unable to connect to the database:', err);
+//     });
 
 module.exports = app;
