@@ -5,3 +5,4 @@ aws.json
 *.tgz
 public/vendor
 .env
+.idea
