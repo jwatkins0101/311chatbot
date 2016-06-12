@@ -7,9 +7,9 @@ var db = null;
 
 function uspsValidation(address, callback) {
   var usps = new USPS({
-    server: 'http://production.shippingapis.com/ShippingAPI.dll',
-    userId: '284TECHU4774',
-    password:'504AD64RK104',
+    server: process.env.USPS_SERVER,
+    userId: process.env.USERID,
+    password:process.env.USPS_PASSWORD,
     ttl: 10000 //TTL in milliseconds for request
   });
 
