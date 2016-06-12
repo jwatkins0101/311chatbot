@@ -26,7 +26,7 @@ function uspsValidation(address) {
       console.log(err);
       return;
     }
-    console.log(address2);
+    return address2;
   });
 }
 function sendGenericMessage(sender, messageData) {
