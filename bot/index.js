@@ -1,6 +1,4 @@
 var request = require("request");
-//var Report = require('../models/report');
-//var CaseType = require('../models/case_type');
 var USPS = require('usps-webtools');
 var Q = require("q");
 
@@ -123,8 +121,6 @@ function buildWhatAboutMessage(address, problem){
     return elements;
   }, []);
 
-  console.log(elements);
-
   return {
     attachment: {
       type: "template",
@@ -197,8 +193,8 @@ function logProblem(address, cases){
 }
 
 function handle(sender, event){
-  console.log("context", context[sender]);
-  console.log("event", event);
+  // console.log("context", context[sender]);
+  // console.log("event", event);
 
   switch(context[sender]){
     // 0. Ask for the address...
