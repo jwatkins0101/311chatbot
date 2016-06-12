@@ -139,6 +139,7 @@ function logProblem(address, problem){
 
 module.exports = function(sender, event){
   console.log("context", context[sender]);
+  console.log("event", event);
 
   switch(context[sender]){
     // 0. Ask for the address...
@@ -157,7 +158,15 @@ module.exports = function(sender, event){
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
-      var payload = JSON.parse(event.postback);
+      var payload;
+      try{
+        payload = JSON.parse(event.postback);
+      }catch(ex){
+        console.error(ex);
+        console.log("event.postback", event.postback);
+        payload = event.postback;
+      }
+
       var problem = payload.problem.push(payload.newProblem);
       var msg = buildAddAnotherMessage(payload.address, problem);
       sendGenericMessage(sender, msg);
