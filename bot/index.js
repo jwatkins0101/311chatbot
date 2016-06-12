@@ -2,11 +2,9 @@ var request = require("request");
 var Report = require('../models/report');
 var CaseType = require('../models/case_type');
 var usps = require('usps-web-tools-node-sdk');
-// var Report = require('../models/report');
-// var CaseType = require('../models/case_type');
 
 var context = {};
-
+var db = null;
 
 function sendGenericMessage(sender, messageData) {
   request({
@@ -78,69 +76,54 @@ function sendTextMessage(sender, text) {
   });
 }
 
-var problems0 = [{
+var problems = [{
   id: 0,
   description: "Structure not maintained",
+  img: "structure_not_maintained_card_360.jpg",
 },{
   id: 1,
   description: "Graffiti",
+  img: "graffiti_card_480.jpg",
 }, {
   id: 2,
-  description: "Trash on private property"
-}];
-
-var problems1 = [{
+  description: "Trash on private property",
+  img: "trash_on_private_property_card_360.jpg",
+}, {
   id: 3,
-  description: "High weeds/Grass/trees"
+  description: "High weeds/Grass/trees",
+  img: "structure_not_maintained_card_360.jpg",
 }, {
   id: 4,
-  description: "Abandoned Vehicle"
-}, {
-  id: 5,
-  description: "Other"
+  description: "Abandoned Vehicle",
+  img: "abandoned_vehicle_card_720.jpg",
 }];
 
 function buildWhatAboutMessage(address, problem){
-  var buttons0 = problems0.map(function(item){
-    return {
-      type: "postback",
-      title: item.description,
-      payload: JSON.stringify({
-        kind: "whatAbout",
-        address: address,
-        problem: problem,
-        newProblem: item.id
-      })
-    };
-  });
 
-  var buttons1 = problems1.map(function(item){
+  var elements = problems.map(function(item){
     return {
-      type: "postback",
-      title: item.description,
-      payload: JSON.stringify({
-        kind: "whatAbout",
-        address: address,
-        problem: problem,
-        newProblem: item.id
-      })
+      title: "Is this your problem?",
+      image_url: "https://themayorlistens.com/images/" + item.img,
+      // subtitle: "Please choose one...",
+      buttons: {
+        type: "postback",
+        title: item.description,
+        payload: JSON.stringify({
+          kind: "whatAbout",
+          address: address,
+          problem: problem,
+          newProblem: item.id
+        })
+      }
     };
   });
 
   return {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "What problem are you having?",
-          "subtitle": "Please choose one...",
-          "buttons": buttons0,
-        }, {
-          "title": "What problem are you having?",
-          "subtitle": "Please choose one...",
-          "buttons": buttons1,
-        }]
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: elements
       }
     }
   };
@@ -186,7 +169,7 @@ function logProblem(address, problems){
   console.log("problems:", problems);
 }
 
-module.exports = function(sender, event){
+function handle(sender, event){
   // console.log("context", context[sender]);
   // console.log("event", event);
 
@@ -229,4 +212,9 @@ module.exports = function(sender, event){
       }
       break;
   }
+};
+
+module.exports = function(db){
+  model = db;
+  return handle;
 };
