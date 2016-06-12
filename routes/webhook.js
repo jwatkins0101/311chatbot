@@ -22,7 +22,7 @@ route.post = function (req, res) {
     console.error(ex);
   }
 
-  res.sendStatus(200);
+  res.json({msg: "okay"});
 };
 
 
