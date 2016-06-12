@@ -23,7 +23,11 @@ router.get('/chat', function(req, res) {
   });
 });
 
-router.get('/webhook', require("./webhook").get)
-router.post('/webhook', require("./webhook").post)
+router.get('/webhook', require("./webhook").get);
+router.post('/webhook', require("./webhook").post);
+
+// Location endpoints
+router.get('/verifylocation', require('./verifylocation').post);
+router.get('/report', require('./report').post);
 
 module.exports = router;

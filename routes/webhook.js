@@ -9,7 +9,6 @@ route.get = function (req, res, next) {
   }
 };
 
-
 route.post = function (req, res) {
 
   try{
