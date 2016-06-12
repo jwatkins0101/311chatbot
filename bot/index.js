@@ -1,9 +1,7 @@
 var request = require("request");
-var Report = require('../models/report');
-var CaseType = require('../models/case_type');
+//var Report = require('../models/report');
+//var CaseType = require('../models/case_type');
 var usps = require('usps-web-tools-node-sdk');
-// var Report = require('../models/report');
-// var CaseType = require('../models/case_type');
 
 var context = {};
 
