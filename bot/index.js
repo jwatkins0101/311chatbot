@@ -1,10 +1,34 @@
 var request = require("request");
-var usps = require('usps-web-tools-node-sdk');
+//var Report = require('../models/report');
+//var CaseType = require('../models/case_type');
+var USPS = require('usps-webtools');
 var Q = require("q");
 
 var context = {};
 var db = null;
 
+function uspsValidation(address) {
+  var usps = new USPS({
+    server: 'http://production.shippingapis.com/ShippingAPI.dll',
+    userId: '284TECHU4774',
+    password:'504AD64RK104',
+    ttl: 10000 //TTL in milliseconds for request
+  });
+
+  usps.verify({
+    street1: address,
+    street2: '',
+    city: 'Louisville',
+    state: 'KY',
+    zip: '99999'
+  }, function(err, address2) {
+    if(err){
+      console.log(err);
+      return;
+    }
+    console.log(address2);
+  });
+}
 function sendGenericMessage(sender, messageData) {
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -26,29 +50,6 @@ function sendGenericMessage(sender, messageData) {
     }
   });
 }
-
-function uspsValidaation(address) {
-  // tell it to use your username from the e-mail
-  usps.configure({
-    userID: '284TECHU4774',
-    password:'504AD64RK104'
-  });
-
-  usps.addressInformation.verify(
-      { address: address },
-
-      function (error, response) {
-        if (error) {
-          // if there's a problem, the error object won't be null
-          console.log(error);
-        } else {
-          // otherwise, you'll get a response object
-          console.log(JSON.stringify(response));
-        }
-      }
-  );
-}
-
 
 function sendTextMessage(sender, text) {
   var messageData = {

@@ -23,6 +23,6 @@
     "sequelize": "^3.23.3",
     "serve-favicon": "~2.3.0",
     "shelljs": "^0.7.0",
-    "usps-web-tools-node-sdk": "^0.5.0"
+    "usps-webtools": "0.0.11"
   }
 }
