@@ -158,16 +158,9 @@ module.exports = function(sender, event){
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
-      var payload;
-      try{
-        payload = JSON.parse(event.postback.payload);
-      }catch(ex){
-        console.error(ex);
-        console.log("event.postback", event.postback);
-        payload = event.postback;
-      }
+      var payload = JSON.parse(event.postback.payload);
 
-      var problem = payload.problem.push(payload.newProblem);
+      var problem = payload.problem.concat([payload.newProblem]);
       var msg = buildAddAnotherMessage(payload.address, problem);
       sendGenericMessage(sender, msg);
       context[sender] = "another";
@@ -176,7 +169,7 @@ module.exports = function(sender, event){
     case "another":
       var payload = JSON.parse(event.postback.payload);
       if(payload.another){
-        var msg = buildAddAnotherMessage(payload.address, payload.problem);
+        var msg = buildWhatAboutMessage(payload.address, payload.problem);
         sendGenericMessage(sender, msg);
       }else{
         logProblem(payload.address, payload.problem);
