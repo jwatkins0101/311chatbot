@@ -1,13 +1,14 @@
 var Sequelize = require('sequelize');
 
-var Report = function (DB) {
+var DataModel = function (DB, model) {
+    // Define Report
     var report = DB.define('report', {
         address: {
-            type: DB.STRING,
+            type: Sequelize.STRING,
             field: 'address'
         },
         zipcode: {
-            type: DB.STRING,
+            type: Sequelize.STRING,
             field: 'zipcode'
         }
     }, {
@@ -17,17 +18,7 @@ var Report = function (DB) {
         freezeTableName: true // Model tableName will be the same as the model name
     });
 
-    report.belongsToMany(CaseType, {through: 'ReportCaseType'});
-
-    report.sync({force: false}).then(function () {
-        // Table created
-        console.log('Created table: report.')
-    });
-
-    return report;
-};
-
-var CaseType = function (DB) {
+    // Define Case Type
     var caseType = DB.define('case_type', {
         name: {
             type: Sequelize.STRING,
@@ -41,15 +32,24 @@ var CaseType = function (DB) {
     });
 
 // Define relationships
-    caseType.belongsToMany(Report, {through: 'ReportCaseType'});
+    report.belongsToMany(caseType, {through: 'ReportCaseType'});
+
+    report.sync({force: false}).then(function () {
+        // Table created
+        console.log('Created table: report.')
+    });
+
+    caseType.belongsToMany(report, {through: 'ReportCaseType'});
 
     caseType.sync({force: false}).then(function () {
         // Table created
         console.log('Created table: case_type.')
     });
 
-    return caseType;
+    model.report = report;
+    model.caseType = caseType;
+
+    return model;
 };
 
-module.exports.Report = CaseType;
-module.exports.CaseType = Report;
+module.exports = DataModel;

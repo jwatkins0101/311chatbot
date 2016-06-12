@@ -5,8 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var Sequelize = require('sequelize');
-var Report = require('./models/index').Report;
-var CaseType = require('./models/index').CaseType;
+var DataModel = require('./models/index');
 var DB;
 require('dotenv').load();
 
@@ -70,10 +69,8 @@ DB
     .catch(function (err) {
         console.log('Unable to connect to the database:', err);
     });
-
-var dataModel = {};
-dataModel.report = new Report(DB);
-dataModel.caseType = new CaseType(DB);
+var model = {};
+var dataModel = DataModel(DB, model);
 
 app.use(function (req, res, next) {
     req.sendTextMessage = sendTextMessage;
