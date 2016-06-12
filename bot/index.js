@@ -171,6 +171,7 @@ module.exports = function(sender, event){
       if(payload.another){
         var msg = buildWhatAboutMessage(payload.address, payload.problem);
         sendGenericMessage(sender, msg);
+        context[sender] = "addProblem";
       }else{
         logProblem(payload.address, payload.problem);
         sendTextMessage(sender, "Thanks for your report!");
