@@ -168,6 +168,7 @@ module.exports = function(sender, event){
     // 3. Log the data
     case "another":
       var payload = JSON.parse(event.postback.payload);
+      
       if(payload.another){
         var msg = buildWhatAboutMessage(payload.address, payload.problem);
         sendGenericMessage(sender, msg);

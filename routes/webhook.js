@@ -18,7 +18,10 @@ route.post = function (req, res) {
     for (i = 0; i < messaging_events.length; i++) {
       event = req.body.entry[0].messaging[i];
       sender = event.sender.id;
-      req.bot(sender, event);
+      if(typeof event.postback != "undefined" || typeof event.message != "undefined"){
+        req.bot(sender, event);
+      }
+
     }
   }catch(err){
     console.error(err);
