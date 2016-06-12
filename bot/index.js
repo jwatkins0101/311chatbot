@@ -212,10 +212,17 @@ function handle(sender, event){
       break;
     // 1. Ask for the problems or ask for the address again...
     case "start":
-      var address = {address: event.message.text, zipcode: null};
-      var msg = buildWhatAboutMessage(address, []);
-      sendGenericMessage(sender, msg);
-      context[sender] = "addProblem";
+      uspsValidaation(event.message.text, function(err, item){
+        if(err){
+          sendTextMessage(sender, "We couldn't find that address. Please enter the address again...");
+          return null;
+        }
+        var address = {address: item.street1, zipcode: item.zip};
+        var msg = buildWhatAboutMessage(address, []);
+        sendGenericMessage(sender, msg);
+        context[sender] = "addProblem";
+      });
+
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
