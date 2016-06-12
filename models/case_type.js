@@ -1,8 +1,9 @@
-var Report = require('./report');
+var Report    = require('./report'),
+    Sequelize = require('sequelize');
 
-var CaseType = sequelize.define('case_type', {
+var CaseType = Sequelize.define('case_type', {
     name: {
-        type: sequelize.STRING,
+        type: Sequelize.STRING,
         field: 'name'
     }
 }, {
@@ -13,7 +14,7 @@ var CaseType = sequelize.define('case_type', {
 });
 
 // Define relationships
-CaseType.hasMany(Report, {as: 'Reports'});
+CaseType.belongsToMany(Report, {through: 'ReportCaseType'});
 
 CaseType.sync({force: false}).then(function () {
     // Table created
