@@ -73,8 +73,7 @@ var model = {};
 var dataModel = DataModel(DB, model);
 
 app.use(function (req, res, next) {
-    req.sendTextMessage = sendTextMessage;
-    req.bot = require("./bot");
+    req.bot = require("./bot")({});
     next();
 });
 

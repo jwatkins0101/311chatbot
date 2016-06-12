@@ -1,12 +1,34 @@
 var request = require("request");
+<<<<<<< HEAD
 var Report = require('../models/case_type');
 var CaseType = require('../models/case_type');
 var usps = require('usps-web-tools-node-sdk');
 // var Report = require('../models/report');
 // var CaseType = require('../models/case_type');
+=======
+var USPS = require('usps-webtools');
+var Q = require("q");
+>>>>>>> 57b0cc09d08170ed518de003a939cfdeed2231bb
 
 var context = {};
+var db = null;
 
+function uspsValidation(address, callback) {
+  var usps = new USPS({
+    server: process.env.USPS_SERVER,
+    userId: process.env.USERID,
+    password:process.env.USPS_PASSWORD,
+    ttl: 10000 //TTL in milliseconds for request
+  });
+
+  usps.verify({
+    street1: address,
+    street2: '',
+    city: 'Louisville',
+    state: 'KY',
+    zip: '99999'
+  }, callback);
+}
 
 function sendGenericMessage(sender, messageData) {
   request({
@@ -29,29 +51,6 @@ function sendGenericMessage(sender, messageData) {
     }
   });
 }
-
-function uspsValidaation(address) {
-  // tell it to use your username from the e-mail
-  usps.configure({
-    userID: '284TECHU4774',
-    password:'504AD64RK104'
-  });
-
-  usps.addressInformation.verify(
-      { address: address },
-
-      function (error, response) {
-        if (error) {
-          // if there's a problem, the error object won't be null
-          console.log(error);
-        } else {
-          // otherwise, you'll get a response object
-          console.log(JSON.stringify(response));
-        }
-      }
-  );
-}
-
 
 function sendTextMessage(sender, text) {
   var messageData = {
@@ -78,69 +77,64 @@ function sendTextMessage(sender, text) {
   });
 }
 
-var problems0 = [{
+var problems = [{
   id: 0,
   description: "Structure not maintained",
+  img: "structure_not_maintained_card_360.jpg",
 },{
   id: 1,
   description: "Graffiti",
+  img: "graffiti_card_480.jpg",
 }, {
   id: 2,
-  description: "Trash on private property"
-}];
-
-var problems1 = [{
+  description: "Trash on private property",
+  img: "trash_on_private_property_card_360.jpg",
+}, {
   id: 3,
-  description: "High weeds/Grass/trees"
+  description: "High weeds/Grass/trees",
+  img: "structure_not_maintained_card_360.jpg",
 }, {
   id: 4,
-  description: "Abandoned Vehicle"
-}, {
-  id: 5,
-  description: "Other"
+  description: "Abandoned Vehicle",
+  img: "abandoned_vehicle_card_720.jpg",
 }];
 
 function buildWhatAboutMessage(address, problem){
-  var buttons0 = problems0.map(function(item){
-    return {
-      type: "postback",
-      title: item.description,
-      payload: JSON.stringify({
-        kind: "whatAbout",
-        address: address,
-        problem: problem,
-        newProblem: item.id
-      })
-    };
-  });
 
-  var buttons1 = problems1.map(function(item){
-    return {
-      type: "postback",
-      title: item.description,
-      payload: JSON.stringify({
+  var elements = problems.reduce(function(elements, item){
+    var notChosen = problem.reduce(function(notChosen, prob){
+      return item.id == prob ? false : notChosen;
+    }, true);
+
+    if(notChosen){
+      var payload = JSON.stringify({
         kind: "whatAbout",
         address: address,
         problem: problem,
         newProblem: item.id
-      })
-    };
-  });
+      });
+
+      elements.push({
+        title: "Is this your problem?",
+        image_url: "https://themayorlistens.com/images/" + item.img,
+        // subtitle: "Please choose one...",
+        buttons: [{
+          type: "postback",
+          title: item.description,
+          payload: payload
+        }]
+      });
+    }
+
+    return elements;
+  }, []);
 
   return {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "What problem are you having?",
-          "subtitle": "Please choose one...",
-          "buttons": buttons0,
-        }, {
-          "title": "What problem are you having?",
-          "subtitle": "Please choose one...",
-          "buttons": buttons1,
-        }]
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: elements
       }
     }
   };
@@ -181,14 +175,34 @@ function buildAddAnotherMessage(address, problem){
   };
 }
 
-function logProblem(address, problems){
-  console.log("address:", address);
-  console.log("problems:", problems);
+function logProblem(address, cases){
+  // address = {address, zipcode}
+  var report;
+  return Q.fcall(function(){
+    return model.Report.findOrCreate(address);
+  })
+    .then(function(item){
+      report = item;
+
+      var promises = cases.map(function(caesId){
+        var name = problems.reduce(function(name, problem){
+          return problem.id == caseId ? problem.description : name;
+        }, "unknown");
+        return model.CaseType.findOrCreate({name: name})
+          .then(function(item){
+            report.addCaseType(item);
+          });
+      });
+    })
+    .finally(function(){
+      console.log("address:", address);
+      console.log("problems:", problems);
+    });
 }
 
-module.exports = function(sender, event){
-  console.log("context", context[sender]);
-  console.log("event", event);
+function handle(sender, event){
+  // console.log("context", context[sender]);
+  // console.log("event", event);
 
   switch(context[sender]){
     // 0. Ask for the address...
@@ -198,12 +212,16 @@ module.exports = function(sender, event){
       break;
     // 1. Ask for the problems or ask for the address again...
     case "start":
-      if (event.message && event.message.text) {
-        var address = event.message.text;
+      uspsValidation(event.message.text, function(err, item){
+        if(err){
+          sendTextMessage(sender, "We couldn't find that address. Please enter the address again...");
+          return null;
+        }
+        var address = {address: item.street1, zipcode: item.zip};
         var msg = buildWhatAboutMessage(address, []);
         sendGenericMessage(sender, msg);
         context[sender] = "addProblem";
-      }
+      });
       break;
     // 2. Ask if they want to add another probelm.
     case "addProblem":
@@ -229,4 +247,9 @@ module.exports = function(sender, event){
       }
       break;
   }
+};
+
+module.exports = function(db){
+  model = db;
+  return handle;
 };
