@@ -34,14 +34,14 @@ var DataModel = function (DB, model) {
 // Define relationships
     report.belongsToMany(caseType, {through: 'ReportCaseType'});
 
-    report.sync({force: false}).then(function () {
+    report.sync({force: true}).then(function () {
         // Table created
         console.log('Created table: report.')
     });
 
     caseType.belongsToMany(report, {through: 'ReportCaseType'});
 
-    caseType.sync({force: false}).then(function () {
+    caseType.sync({force: true}).then(function () {
         // Table created
         console.log('Created table: case_type.')
     });
