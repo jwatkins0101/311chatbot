@@ -194,7 +194,7 @@ function logProblem(address, cases){
 }
 
 function handle(sender, event){
-  // console.log("context", context[sender]);
+   console.log("context", context[sender]);
   // console.log("event", event);
 
   switch(context[sender]){
@@ -234,7 +234,6 @@ function handle(sender, event){
         sendGenericMessage(sender, msg);
         context[sender] = "addProblem";
       }else{
-        console.log('No additional problem');
         logProblem(payload.address, payload.problem);
         sendTextMessage(sender, "Thanks for your report!");
         delete context[sender];
