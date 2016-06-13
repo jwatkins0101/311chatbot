@@ -73,7 +73,7 @@ var model = {};
 var dataModel = DataModel(DB, model);
 
 app.use(function (req, res, next) {
-    req.bot = require("./bot")(DB);
+    req.bot = require("./bot")(dataModel);
     next();
 });
 
