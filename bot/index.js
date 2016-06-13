@@ -168,6 +168,7 @@ function buildAddAnotherMessage(address, problem){
 }
 
 function logProblem(address, cases){
+  console.log("Saving a record........");
   // address = {address, zipcode}
   var report;
   return Q.fcall(function(){
@@ -176,7 +177,7 @@ function logProblem(address, cases){
     .then(function(item){
       report = item;
 
-      var promises = cases.map(function(caesId){
+      var promises = cases.map(function(caseId){
         var name = problems.reduce(function(name, problem){
           return problem.id == caseId ? problem.description : name;
         }, "unknown");
