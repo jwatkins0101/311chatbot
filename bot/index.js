@@ -216,7 +216,7 @@ function handle(sender, event){
         context[sender] = "addProblem";
       });
       break;
-    // 2. Ask if they want to add another probelm.
+    // 2. Ask if they want to add another problem.
     case "addProblem":
       var payload = JSON.parse(event.postback.payload);
 
@@ -234,6 +234,7 @@ function handle(sender, event){
         sendGenericMessage(sender, msg);
         context[sender] = "addProblem";
       }else{
+        console.log('No additional problem');
         logProblem(payload.address, payload.problem);
         sendTextMessage(sender, "Thanks for your report!");
         delete context[sender];
