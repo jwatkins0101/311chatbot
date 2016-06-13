@@ -61,14 +61,6 @@ DB = new Sequelize('chatbot', 'chatbot', '311CHATbot81489$!', {
     }
 });
 
-DB
-    .authenticate()
-    .then(function (err) {
-        console.log('Connection has been established successfully.');
-    })
-    .catch(function (err) {
-        console.log('Unable to connect to the database:', err);
-    });
 var model = {};
 var dataModel = DataModel(DB, model);
 

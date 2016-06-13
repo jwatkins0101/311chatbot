@@ -194,7 +194,7 @@ function logProblem(address, cases){
 }
 
 function handle(sender, event){
-   console.log("context", context[sender]);
+  // console.log("context", context[sender]);
   // console.log("event", event);
 
   switch(context[sender]){
