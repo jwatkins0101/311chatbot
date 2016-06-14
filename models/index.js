@@ -37,7 +37,7 @@ var DataModel = function (DB, model) {
     report.belongsToMany(caseType, {through: reportCaseType});
     caseType.belongsToMany(report, {through: reportCaseType});
 
-    report.sync({force: false}).then(function () {
+    DB.sync({force: false}).then(function () {
         // Table created
         console.log('Created table: report.')
     });
