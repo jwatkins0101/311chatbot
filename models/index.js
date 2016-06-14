@@ -31,23 +31,20 @@ var DataModel = function (DB, model) {
         freezeTableName: true // Model case_type will be the same as the model name
     });
 
-// Define relationships
-    report.belongsToMany(caseType, {through: 'ReportCaseType'});
+    var reportCaseType = DB.deinfe('report_case_type', {});
+
+    // Define relationships
+    report.belongsToMany(caseType, {through: reportCaseType});
+    caseType.belongsToMany(report, {through: reportCaseType});
 
     report.sync({force: false}).then(function () {
         // Table created
         console.log('Created table: report.')
     });
 
-    caseType.belongsToMany(report, {through: 'ReportCaseType'});
-
-    caseType.sync({force: false}).then(function () {
-        // Table created
-        console.log('Created table: case_type.')
-    });
-
     model.report = report;
     model.caseType = caseType;
+    model.reportCaseType = reportCaseType;
 
     return model;
 };
