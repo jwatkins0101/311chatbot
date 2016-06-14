@@ -31,7 +31,7 @@ var DataModel = function (DB, model) {
         freezeTableName: true // Model case_type will be the same as the model name
     });
 
-    var reportCaseType = DB.deinfe('report_case_type', {});
+    var reportCaseType = DB.define('report_case_type', {});
 
     // Define relationships
     report.belongsToMany(caseType, {through: reportCaseType});
