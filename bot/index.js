@@ -3,7 +3,7 @@ var USPS = require('usps-webtools');
 var Q = require("q");
 
 var context = {};
-var db = null;
+var model = null;
 
 function uspsValidation(address, callback) {
   var usps = new USPS({
@@ -169,6 +169,7 @@ function buildAddAnotherMessage(address, problem){
 
 function logProblem(address, cases){
   console.log("Saving a record........");
+  console.log("model", model);
   // address = {address, zipcode}
   var report;
   return Q.fcall(function(){
@@ -184,12 +185,19 @@ function logProblem(address, cases){
         return model.caseType.findOrCreate({name: name})
           .then(function(item){
             report.addCaseType(item);
+          })
+          .catch(function(err){
+            console.error(err);
           });
       });
+      return Q.all(promises);
+    })
+    .catch(function(err){
+      console.error(err);
     })
     .finally(function(){
       console.log("address:", address);
-      console.log("problems:", problems);
+      console.log("cases:", cases);
     });
 }
 
