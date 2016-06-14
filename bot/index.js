@@ -175,16 +175,16 @@ function logProblem(address, cases){
   return Q.fcall(function(){
     return model.report.findOrCreate({where: address, defaults: address});
   })
-    .then(function(item){
-      report = item;
+    .then(function(opts){
+      report = opts[0];
 
       var promises = cases.map(function(caseId){
         var name = problems.reduce(function(name, problem){
           return problem.id == caseId ? problem.description : name;
         }, "unknown");
         return model.caseType.findOrCreate({where: {name: name}, defaults: {name: name}})
-          .then(function(item){
-            report.addCaseType(item);
+          .then(function(opts){
+            report.addCaseType(opts[0]);
           })
           .catch(function(err){
             console.error(err);
