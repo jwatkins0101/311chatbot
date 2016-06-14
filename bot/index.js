@@ -173,7 +173,7 @@ function logProblem(address, cases){
   // address = {address, zipcode}
   var report;
   return Q.fcall(function(){
-    return model.report.findOrCreate({where: address, defaults: address);
+    return model.report.findOrCreate({where: address, defaults: address});
   })
     .then(function(item){
       report = item;
