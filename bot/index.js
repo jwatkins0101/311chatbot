@@ -184,7 +184,12 @@ function logProblem(address, cases){
         }, "unknown");
         return model.caseType.findOrCreate({where: {name: name}, defaults: {name: name}})
           .then(function(opts){
-            report.addCaseType(opts[0]);
+            var thisCase = opts[0];
+            report.addCaseType(thisCase);
+            return model.reportCaseType.create({
+              reportId: report.id,
+              caseTypeId: thisCase.id
+            });
           })
           .catch(function(err){
             console.error(err);
