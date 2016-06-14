@@ -185,7 +185,6 @@ function logProblem(address, cases){
         return model.caseType.findOrCreate({where: {name: name}, defaults: {name: name}})
           .then(function(opts){
             var thisCase = opts[0];
-            report.addCaseType(thisCase);
             return model.reportCaseType.create({
               reportId: report.id,
               caseTypeId: thisCase.id
